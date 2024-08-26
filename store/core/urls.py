@@ -14,20 +14,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin # type: ignore
-from django.urls import path, include # type: ignore
-from rest_framework.routers import DefaultRouter # type: ignore
-from book.views import BookViewSet
-from django.conf.urls.static import static # type: ignore
-from django.conf import settings# type: ignore
-
-router = DefaultRouter()
-router.register(r'book', BookViewSet)
+from django.contrib import admin
+from django.urls import path
+from django.conf.urls.static import static
+from django.conf import settings
+from book.views import quiz_data  # Import the new view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(router.urls)),
+    path('quiz-data/', quiz_data, name='quiz-data'),  # Add the new API endpoint
 ]
 
+# Serve static and media files during development
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

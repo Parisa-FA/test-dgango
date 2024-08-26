@@ -1,9 +1,5 @@
-from rest_framework import viewsets
-from .serializers import BookSerializer
-from .models import Book
+from django.http import JsonResponse
 
-
-class BookViewSet(viewsets.ModelViewSet):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-
+def quiz_data(request):
+    data = {"message": "you reached /quiz-data"}
+    return JsonResponse(data)
