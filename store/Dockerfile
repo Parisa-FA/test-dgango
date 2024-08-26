@@ -1,20 +1,21 @@
-# Pull the image from Dockerhub
+
 FROM python:alpine3.19
+
+# Prevents Python from writing pyc files.
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Keeps Python from buffering stdout and stderr to avoid situations where
+# the application crashes without emitting any logs due to buffering.
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /store
 
-# set up python environment variables
-
-ENV PYTHONDOWNWRITEBYTECODE 1
-ENV PYTHONNUNBUFFER 1
-
-# update and  install dependencies
 RUN pip install --upgrade pip
-COPY ./requirements.txt /api/requirements.txt
-RUN pip install -r /api/requirements.txt
+COPY ./requirements.txt /store/requirements.txt
+RUN pip install -r /store/requirements.txt
 
-# copy project
+
+# Copy the source code into the container.
 COPY . .
 
-# Expose the port server is running on
-EXPOSE 8000
+
