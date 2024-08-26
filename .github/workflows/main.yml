@@ -3,7 +3,6 @@ name: Continuous Integration and Delivery
 on: [push]
 
 env:
-  #
   DJANGO_TUTORIAL_API_IMAGE: ghcr.io/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/store
   DJANGO_TUTORIAL_NGINX_IMAGE: ghcr.io/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/nginx
   REGISTRY: ghcr.io
@@ -19,8 +18,8 @@ jobs:
 
       - name: Set environment variables to .env
         run: |
-          echo "DJANGO_TUTORIAL_API_IMAGE=$(echo ${{env.DJANGO_TUTORIAL_API_IMAGE}} )" >> $GITHUB_ENV
-          echo "DJANGO_TUTORIAL_NGINX_IMAGE=$(echo ${{env.DJANGO_TUTORIAL_NGINX_IMAGE}} )" >> $GITHUB_ENV
+          echo "DJANGO_TUTORIAL_API_IMAGE=$(echo ${{env.DJANGO_TUTORIAL_API_IMAGE}})" >> $GITHUB_ENV
+          echo "DJANGO_TUTORIAL_NGINX_IMAGE=$(echo ${{env.DJANGO_TUTORIAL_NGINX_IMAGE}})" >> $GITHUB_ENV
 
       - name: Log in to GitHub Packages
         env:
@@ -31,6 +30,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install docker-compose -y
+
+      - name: Clean up existing containers and images
+        run: |
+          docker-compose -f docker-compose.ci.yml down --rmi all -v
+          docker system prune -f
 
       - name: Build images
         id: build-images
@@ -87,7 +91,6 @@ jobs:
       - name: Deploy images on AWS EC2
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-
         run: |
           scp -o StrictHostKeyChecking=no -r ./.env ./docker-compose.prod.yml ${{secrets.AWS_HOST_USER}}@${{ secrets.AWS_EC2_IP_ADDRESS }}:
           ssh -o StrictHostKeyChecking=no ${{secrets.AWS_HOST_USER}}@${{ secrets.AWS_EC2_IP_ADDRESS }} << EOF
