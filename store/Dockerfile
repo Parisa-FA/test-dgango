@@ -1,4 +1,3 @@
-
 FROM python:alpine3.19
 
 # Prevents Python from writing pyc files.
@@ -14,8 +13,8 @@ RUN pip install --upgrade pip
 COPY ./requirements.txt /store/requirements.txt
 RUN pip install -r /store/requirements.txt
 
-
 # Copy the source code into the container.
 COPY . .
 
-
+# Set the Gunicorn command
+CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:8000", "core.wsgi:application"]
