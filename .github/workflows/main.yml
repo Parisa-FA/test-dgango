@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: checkout main
+      - name: Checkout main
         uses: actions/checkout@v3
 
       - name: Set environment variables to .env
@@ -27,11 +27,6 @@ jobs:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: echo ${PERSONAL_ACCESS_TOKEN} | docker login ghcr.io -u ${{ secrets.NAMESPACE }} --password-stdin
 
-      - name: Pull images
-        run: |
-          docker pull ${{ env.DJANGO_TUTORIAL_API_IMAGE }} || true
-          docker pull ${{ env.DJANGO_TUTORIAL_NGINX_IMAGE }} || true
-
       - name: Install Docker Compose
         run: |
           sudo apt-get update
@@ -40,7 +35,7 @@ jobs:
       - name: Build images
         id: build-images
         run: |
-          docker-compose -f docker-compose.ci.yml build
+          docker-compose -f docker-compose.ci.yml build --no-cache --pull
 
       - name: Push images
         run: |
