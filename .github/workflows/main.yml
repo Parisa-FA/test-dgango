@@ -5,6 +5,12 @@ on:
     branches:
       - main  # Adjust this to the branch you want to trigger the workflow on
 
+env:
+  DJANGO_TUTORIAL_API_IMAGE: ghcr.io/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/store
+  DJANGO_TUTORIAL_NGINX_IMAGE: ghcr.io/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/nginx
+  REGISTRY: ghcr.io
+
+
 jobs:
   deploy:
     name: Deploy to AWS EC2
